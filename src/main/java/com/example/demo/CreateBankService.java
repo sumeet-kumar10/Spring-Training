@@ -13,9 +13,17 @@ public class CreateBankService implements BankServiceInterface{
 	@Autowired
 	BankDAO bankDAO;
 
+
 	@Override
-	public void createUser(BankDTO bank) {
-		bankDAO.save(bank);
+	public void createUser(BankDTO bank) throws UserExistException {
+		if(!bankDAO.existsById(bank.getUid())) {
+			bankDAO.save(bank);
+		}
+		else {
+			System.out.println("user Id already exist");
+			throw new UserExistException("User Id already exist");
+		}
+		
 	}
 
 	@Override
@@ -23,17 +31,6 @@ public class CreateBankService implements BankServiceInterface{
 		Optional<BankDTO> bankObject = bankDAO.findById(Integer.valueOf(id));
 		BankDTO bankAccount = bankObject.get();
 		return bankAccount;
-	}
-
-	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
-	public void checkUser(int id) throws UserExistException{
-		Optional<BankDTO> userObject = bankDAO.findById(Integer.valueOf(id));
-		boolean result = userObject.isPresent();
-		if(result == true) {
-			throw new UserExistException("User already exist");
-		}
-		
 	}
 	
 	@Override
@@ -44,7 +41,6 @@ public class CreateBankService implements BankServiceInterface{
 		int amount = transfer.getAmount();
 		debitransfer(debitId, amount);
 		creditransfer(creditId, amount);
-
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED)

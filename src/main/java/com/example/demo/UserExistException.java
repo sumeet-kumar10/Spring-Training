@@ -5,7 +5,7 @@ public class UserExistException extends Exception {
 	private String message;
 
 	public UserExistException(String string) {
-		message = string;
+		this.message = string;
 	}
 
 	@Override
