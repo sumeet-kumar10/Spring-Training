@@ -30,7 +30,14 @@ public class BankController {
 
 	@RequestMapping(value = "createAccount", method = RequestMethod.POST)
 	public ModelAndView addAccount(BankDTO bankDTO, ModelAndView modelAndView) throws UserExistException {
-		bank.createUser(bankDTO);
+		try {
+			bank.createUser(bankDTO);
+		}
+		catch(Exception e) {
+			modelAndView.setViewName("UserExistException");
+			return modelAndView;
+		}
+		
 		modelAndView.setViewName("User");
 		return modelAndView;
 
